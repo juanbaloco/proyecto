@@ -5,7 +5,7 @@ from matplotlib_venn import venn2
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 def obtener_factores_primos(numero):
-    """Realiza la factorización en primos y devuelve un conjunto con los factores primos únicos."""
+    #Realiza la factorización en primos y devuelve un conjunto con los factores primos únicos.
     factores = set()
     divisor = 2
     while numero > 1:
@@ -16,7 +16,7 @@ def obtener_factores_primos(numero):
     return factores
 
 def calcular_mcd(factores1, factores2):
-    """Calcula el MCD a partir de los factores primos comunes de ambos números."""
+    #Calcula el MCD a partir de los factores primos comunes de ambos números.
     factores_comunes = factores1.intersection(factores2)
     mcd = 1
     for factor in factores_comunes:
@@ -24,7 +24,7 @@ def calcular_mcd(factores1, factores2):
     return mcd
 
 def mostrar_diagrama_venn(factores1, factores2, frame):
-    """Genera y muestra un diagrama de Venn con los factores primos de ambos números dentro de la interfaz."""
+    #Genera y muestra un diagrama de Venn con los factores primos de ambos números dentro de la interfaz.
     # Limpiar el contenido anterior del frame
     for widget in frame.winfo_children():
         widget.destroy()
@@ -44,7 +44,7 @@ def mostrar_diagrama_venn(factores1, factores2, frame):
     canvas.get_tk_widget().pack()
 
 def calcular():
-    """Función que calcula los factores primos y el MCD, y muestra el diagrama de Venn dentro de la GUI."""
+    #Función que calcula los factores primos y el MCD, y muestra el diagrama de Venn dentro de la GUI.
     try:
         numero1 = int(entry_numero1.get())
         numero2 = int(entry_numero2.get())
@@ -59,7 +59,11 @@ def calcular():
         
         # Calcular y mostrar el MCD
         mcd = calcular_mcd(factores1, factores2)
-        label_mcd_result.config(text=f"MCD: {mcd}")
+
+        if mcd is not 1:
+         label_mcd_result.config(text=f"MCD: {mcd}")
+        else:
+         label_mcd_result.config(text="No hay MCD")
         
         # Mostrar el diagrama de Venn dentro del frame
         mostrar_diagrama_venn(factores1, factores2, frame_diagrama)
