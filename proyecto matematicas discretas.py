@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from matplotlib import pyplot as plt
 from matplotlib_venn import venn2
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 def obtener_factores_primos(numero):
     """Realiza la factorización en primos y devuelve un conjunto con los factores primos únicos."""
@@ -22,23 +23,28 @@ def calcular_mcd(factores1, factores2):
         mcd *= factor
     return mcd
 
-def mostrar_diagrama_venn(factores1, factores2):
-    """Genera y muestra un diagrama de Venn con los factores primos de ambos números y sus elementos específicos."""
-    plt.figure(figsize=(6, 6))
-    
-    # Crear el diagrama de Venn con los conjuntos
-    venn = venn2([factores1, factores2], set_labels=('Factores de N1', 'Factores de N2'))
+def mostrar_diagrama_venn(factores1, factores2, frame):
+    """Genera y muestra un diagrama de Venn con los factores primos de ambos números dentro de la interfaz."""
+    # Limpiar el contenido anterior del frame
+    for widget in frame.winfo_children():
+        widget.destroy()
+
+    # Crear una figura de matplotlib
+    fig, ax = plt.subplots(figsize=(5, 5))
+    venn = venn2([factores1, factores2], set_labels=('Factores de N1', 'Factores de N2'), ax=ax)
     
     # Configurar las etiquetas de cada sección del diagrama
     venn.get_label_by_id('10').set_text('\n'.join(map(str, factores1 - factores2)))  # Solo en N1
     venn.get_label_by_id('01').set_text('\n'.join(map(str, factores2 - factores1)))  # Solo en N2
     venn.get_label_by_id('11').set_text('\n'.join(map(str, factores1 & factores2)))  # En la intersección
 
-    plt.title("Diagrama de Venn de los Factores Primos")
-    plt.show()
+    # Integrar la figura en tkinter
+    canvas = FigureCanvasTkAgg(fig, master=frame)
+    canvas.draw()
+    canvas.get_tk_widget().pack()
 
 def calcular():
-    """Función que calcula los factores primos y el MCD, y muestra el diagrama de Venn."""
+    """Función que calcula los factores primos y el MCD, y muestra el diagrama de Venn dentro de la GUI."""
     try:
         numero1 = int(entry_numero1.get())
         numero2 = int(entry_numero2.get())
@@ -55,8 +61,8 @@ def calcular():
         mcd = calcular_mcd(factores1, factores2)
         label_mcd_result.config(text=f"MCD: {mcd}")
         
-        # Mostrar el diagrama de Venn
-        mostrar_diagrama_venn(factores1, factores2)
+        # Mostrar el diagrama de Venn dentro del frame
+        mostrar_diagrama_venn(factores1, factores2, frame_diagrama)
     
     except ValueError:
         messagebox.showerror("Error de entrada", "Por favor, ingresa valores enteros válidos.")
@@ -64,7 +70,7 @@ def calcular():
 # Configuración de la ventana principal
 root = tk.Tk()
 root.title("Factorización en Primos, Cálculo de MCD y Diagrama de Venn")
-root.geometry("500x350")
+root.geometry("600x600")
 
 # Etiquetas y campos de entrada para los dos números
 tk.Label(root, text="Ingrese el primer número entero:").pack()
@@ -88,6 +94,10 @@ label_factores2.pack()
 
 label_mcd_result = tk.Label(root, text="MCD: ")
 label_mcd_result.pack()
+
+# Frame para contener el diagrama de Venn
+frame_diagrama = tk.Frame(root)
+frame_diagrama.pack(fill="both", expand=True)
 
 # Iniciar el bucle de la interfaz gráfica
 root.mainloop()
