@@ -54,13 +54,13 @@ def calcular():
         factores2 = obtener_factores_primos(numero2)
         
         # Mostrar la factorización de cada número
-        label_factores1.config(text=f"Factores primos de {numero1}: {factores1}")
-        label_factores2.config(text=f"Factores primos de {numero2}: {factores2}")
+        label_factores1.config(text=f"Factores primos de {numero1}: {factores1}",fg="blue")
+        label_factores2.config(text=f"Factores primos de {numero2}: {factores2}",fg="orange")
         
         # Calcular y mostrar el MCD
         mcd = calcular_mcd(factores1, factores2)
 
-        if mcd is not 1:
+        if mcd != 1:
          label_mcd_result.config(text=f"MCD: {mcd}")
         else:
          label_mcd_result.config(text="No hay MCD")
@@ -91,9 +91,11 @@ button_calcular.pack()
 
 # Etiquetas para mostrar los resultados de factorización y MCD
 label_factores1 = tk.Label(root, text="Factores primos de primer número: ")
+label_factores1.config(fg="blue")
 label_factores1.pack()
 
 label_factores2 = tk.Label(root, text="Factores primos de segundo número: ")
+label_factores2.config(fg="orange")
 label_factores2.pack()
 
 label_mcd_result = tk.Label(root, text="MCD: ")
